@@ -6,6 +6,8 @@ import org.example.kanbanboard.model.Task;
 import org.example.kanbanboard.service.BoardService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/todo")
 @AllArgsConstructor
@@ -16,6 +18,11 @@ public class BoardController {
     @PostMapping
     public Task addTask(@RequestBody TaskDto taskDto){
         return service.addTask(taskDto);
+    }
+
+    @GetMapping
+    public List<Task> getAllTasks(){
+        return service.getAllTasks();
     }
 
 }
