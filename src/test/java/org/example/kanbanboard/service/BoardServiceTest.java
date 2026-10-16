@@ -1,6 +1,7 @@
 package org.example.kanbanboard.service;
 
 import org.example.kanbanboard.dto.TaskDto;
+import org.example.kanbanboard.exception.NoTaskFoundException;
 import org.example.kanbanboard.model.Status;
 import org.example.kanbanboard.model.Task;
 import org.example.kanbanboard.repository.BoardRepository;
@@ -11,8 +12,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 class BoardServiceTest {
@@ -51,7 +54,7 @@ class BoardServiceTest {
 
         //THEN
         assertEquals(expectedList, actualList);
-        verify(mockRepo).findAll();
+        verify(mockRepo, times(1)).findAll();
     }
 
 
@@ -78,6 +81,40 @@ class BoardServiceTest {
 
         //THEN
         assertEquals(expectedListOfTasks, actualList);
-        verify(mockRepo).findAll();
+        verify(mockRepo, times(1)).findAll();
+    }
+
+    @Test
+    void getTaskById_shouldBeOneTask_WhenOneExist() throws NoTaskFoundException {
+        //GIVEN
+        BoardRepository mockRepo = mock(BoardRepository.class);
+        IdService mockIdService = mock(IdService.class);
+        BoardService service = new BoardService(mockRepo, mockIdService);
+        Task expectedTask = new Task(1, "Some task", Status.OPEN);
+        //WHEN
+        when(mockRepo.findById(1)).thenReturn(Optional.of(new Task(1, "Some task", Status.OPEN)));
+        Task actualTask = service.getTaskById("1");
+
+        //THEN
+        assertEquals(expectedTask, actualTask);
+        verify(mockRepo, times(1)).findById(1);
+
+    }
+
+    @Test
+    void getTaskById_shouldBeException_WhenTaskNotExist() {
+        //GIVEN
+        BoardRepository mockRepo = mock(BoardRepository.class);
+        IdService mockIdService = mock(IdService.class);
+        BoardService service = new BoardService(mockRepo, mockIdService);
+        //WHEN
+        when(mockRepo.findById(1)).thenReturn(Optional.empty());
+        try {
+            service.getTaskById("1");
+            //THEN
+            fail("Expected Exception not thrown, even though task with id: 1, that does not exist.");
+        } catch (NoTaskFoundException e) {
+            assertEquals("Task with id: 1 doesn't exist.", e.getMessage());
+        }
     }
 }

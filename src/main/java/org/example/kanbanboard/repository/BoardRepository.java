@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface BoardRepository extends MongoRepository<Task, String> {
+public interface BoardRepository extends MongoRepository<Task, Integer> {
 
 }

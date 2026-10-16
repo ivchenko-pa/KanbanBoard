@@ -2,6 +2,7 @@ package org.example.kanbanboard.controller;
 
 import lombok.AllArgsConstructor;
 import org.example.kanbanboard.dto.TaskDto;
+import org.example.kanbanboard.exception.NoTaskFoundException;
 import org.example.kanbanboard.model.Task;
 import org.example.kanbanboard.service.BoardService;
 import org.springframework.web.bind.annotation.*;
@@ -25,4 +26,8 @@ public class BoardController {
         return service.getAllTasks();
     }
 
+    @GetMapping("/{id}")
+    public Task getTaskById(@PathVariable String id) throws NoTaskFoundException {
+        return service.getTaskById(id);
+    }
 }
