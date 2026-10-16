@@ -1,5 +1,7 @@
 package org.example.kanbanboard.model;
 
 public enum Status {
-    OPEN
+    OPEN,
+    IN_PROGRESS,
+    DONE
 }

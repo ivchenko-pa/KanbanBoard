@@ -117,4 +117,39 @@ class BoardServiceTest {
             assertEquals("Task with id: 1 doesn't exist.", e.getMessage());
         }
     }
+
+    @Test
+    void updateTaskById_shouldBeReturnedOne_whenOneExists() throws NoTaskFoundException {
+        //GIVEN
+        BoardRepository mockRepo = mock(BoardRepository.class);
+        IdService mockIdService = mock(IdService.class);
+        BoardService service = new BoardService(mockRepo, mockIdService);
+        TaskDto inputTaskDto = new TaskDto("Some task", Status.IN_PROGRESS);
+        Task expectedTask = new Task(1, "Some task", Status.IN_PROGRESS);
+        when(mockRepo.existsById(1)).thenReturn(true);
+
+        //WHEN
+        Task actualTask = service.updateTaskById("1", inputTaskDto);
+
+        //THEN
+        assertEquals(expectedTask, actualTask);
+        verify(mockRepo, times(1)).save(expectedTask);
+    }
+
+    @Test
+    void updateTaskById_shouldBeException_whenNoneExists() {
+        //GIVEN
+        BoardRepository mockRepo = mock(BoardRepository.class);
+        IdService mockIdService = mock(IdService.class);
+        BoardService service = new BoardService(mockRepo, mockIdService);
+        TaskDto inputTaskDto = new TaskDto("Some task", Status.IN_PROGRESS);
+        when(mockRepo.existsById(1)).thenReturn(false);
+        //WHEN
+        try {
+            service.updateTaskById("1", inputTaskDto);
+            fail("Expected Exception not thrown, even though task with id: 1, that does not exist.");
+        } catch (NoTaskFoundException e) {
+            assertEquals("Task with id: 1 doesn't exist.", e.getMessage());
+        }
+    }
 }

@@ -30,4 +30,9 @@ public class BoardController {
     public Task getTaskById(@PathVariable String id) throws NoTaskFoundException {
         return service.getTaskById(id);
     }
+
+    @PutMapping("/{id}")
+    public Task updateTaskById(@PathVariable String id, @RequestBody TaskDto taskDto) throws NoTaskFoundException {
+        return service.updateTaskById(id, taskDto);
+    }
 }
