@@ -35,4 +35,9 @@ public class BoardController {
     public Task updateTaskById(@PathVariable String id, @RequestBody TaskDto taskDto) throws NoTaskFoundException {
         return service.updateTaskById(id, taskDto);
     }
+
+    @DeleteMapping("/{id}")
+    public boolean deleteTaskById(@PathVariable String id) throws NoTaskFoundException {
+        return service.deleteTaskById(id);
+    }
 }

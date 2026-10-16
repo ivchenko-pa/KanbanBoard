@@ -8,6 +8,7 @@ import org.example.kanbanboard.repository.BoardRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -47,5 +48,13 @@ public class BoardService {
             return task;
         }
         throw new NoTaskFoundException(String.format("Task with id: %s doesn't exist.", id));
+    }
+
+    public boolean deleteTaskById(String id){
+        if (Objects.nonNull(id) && repo.existsById(Integer.parseInt(id))){
+            repo.deleteById(Integer.parseInt(id));
+            return true;
+        }
+        return false;
     }
 }

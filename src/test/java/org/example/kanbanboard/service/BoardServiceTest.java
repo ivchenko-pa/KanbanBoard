@@ -152,4 +152,56 @@ class BoardServiceTest {
             assertEquals("Task with id: 1 doesn't exist.", e.getMessage());
         }
     }
+
+    @Test
+    void deleteTaskById_shouldBeTrue_whenTaskExist() {
+        //GIVEN
+        BoardRepository mockRepo = mock(BoardRepository.class);
+        IdService mockIdService = mock(IdService.class);
+        BoardService service = new BoardService(mockRepo, mockIdService);
+
+        when(mockRepo.existsById(1)).thenReturn(true);
+
+        //WHEN
+        boolean actualResult = service.deleteTaskById("1");
+
+        //THEN
+        assertEquals(true, actualResult);
+        verify(mockRepo, times(1)).existsById(1);
+        verify(mockRepo, times(1)).deleteById(1);
+    }
+
+    @Test
+    void deleteTaskById_shouldBeFalse_whenNoneTaskExist() {
+        //GIVEN
+        BoardRepository mockRepo = mock(BoardRepository.class);
+        IdService mockIdService = mock(IdService.class);
+        BoardService service = new BoardService(mockRepo, mockIdService);
+
+        when(mockRepo.existsById(1)).thenReturn(false);
+
+        //WHEN
+        boolean actualResult = service.deleteTaskById("1");
+
+        //THEN
+        assertEquals(false, actualResult);
+        verify(mockRepo, times(1)).existsById(1);
+        verify(mockRepo, times(0)).deleteById(1);
+    }
+
+    @Test
+    void deleteTaskById_shouldBeFalse_whenIdIsNull() {
+        //GIVEN
+        BoardRepository mockRepo = mock(BoardRepository.class);
+        IdService mockIdService = mock(IdService.class);
+        BoardService service = new BoardService(mockRepo, mockIdService);
+
+        //WHEN
+        boolean actualResult = service.deleteTaskById(null);
+
+        //THEN
+        assertEquals(false, actualResult);
+        verify(mockRepo, times(0)).existsById(1);
+        verify(mockRepo, times(0)).deleteById(1);
+    }
 }
